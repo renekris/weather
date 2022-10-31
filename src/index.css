@@ -1,0 +1,59 @@
+:root {
+  background-color: #222;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+}
+
+nav li {
+  list-style: none;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CONTAINER */
+.container {
+  display: grid;
+  height: 100%;
+  width: 80%;
+  background-color: #333;
+
+  grid-template-rows: 1fr 10fr 1fr;
+}
+
+/* HEADER */
+.header {
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+}
+
+/* CONTENT */
+.content {
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+}
+
+/* FOOTER */
+.footer {
+  height: 100%;
+  width: 100%;
+  background-color: #333;
+}
