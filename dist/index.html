@@ -13,9 +13,26 @@
   </head>
   <body>
     <div class="container">
-      <header class="header"></header>
+      <header class="header">
+        <form id="search">
+          <label for="search">
+            <input
+              type="search"
+              name="city"
+              id="search"
+              placeholder="City Name..."
+            />
+          </label>
+          <button type="submit">Search</button>
+        </form>
+      </header>
       <div class="content">
-        <div id="map"></div>
+        <!-- <div id="map"></div> -->
+        <div class="forecast-data">
+          <div class="forecast-city"></div>
+          <div class="forecast-current"></div>
+          <div class="forecast-days"></div>
+        </div>
       </div>
       <footer class="footer"></footer>
     </div>
