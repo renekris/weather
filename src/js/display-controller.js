@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { getCurrentLocationWeatherData, getNamedLocationWeatherData } from './weather-api';
 
 // DOM CACHE
@@ -55,7 +56,7 @@ function displayCurrent() {
   const CURRENT_DATA_PATH = activeLocationData.list[0];
 
   const elDate = elForecastCurrent.appendChild(document.createElement('p'));
-  elDate.textContent = new Date(CURRENT_DATA_PATH.dt * 1000);
+  elDate.textContent = format(new Date(CURRENT_DATA_PATH.dt * 1000), 'cccc do');
 
   const elTemp = elForecastCurrent.appendChild(document.createElement('p'));
   elTemp.textContent = `Temp: ${returnCurrentUnitTemp(CURRENT_DATA_PATH.main.temp)}`;
@@ -65,6 +66,7 @@ function displayCurrent() {
 }
 
 function getWeatherIconUrl(weatherIconName) {
+  // https://openweathermap.org/weather-conditions | http://openweathermap.org/img/wn/10d@2x.png
   const mainUrl = 'https://openweathermap.org/img/wn/';
   return `${mainUrl}${weatherIconName}@2x.png`
 }
@@ -74,10 +76,9 @@ function displayDayMini(locationData) {
   elCard.classList.add('forecast-card');
 
   const elDate = elCard.appendChild(document.createElement('p'));
-  elDate.textContent = new Date(locationData.dt * 1000);
+  elDate.textContent = format(new Date(locationData.dt * 1000), 'cccc do');
 
   const elIcon = elCard.appendChild(document.createElement('img'));
-  // https://openweathermap.org/weather-conditions | http://openweathermap.org/img/wn/10d@2x.png
   elIcon.src = getWeatherIconUrl(locationData.weather[0].icon);
   elIcon.alt = locationData.weather[0].description;
 
@@ -87,8 +88,13 @@ function displayDayMini(locationData) {
 
 function displayDays() {
   elForecastDays.innerHTML = '';
+  let skipFirstDayLatch = true;
   const ELEMENTS_PER_DAY = 8
   for (let i = 0; i < activeLocationData.list.length; i += ELEMENTS_PER_DAY) {
+    if (skipFirstDayLatch) {
+      skipFirstDayLatch = false;
+      i += ELEMENTS_PER_DAY;
+    }
     const element = activeLocationData.list[i];
     displayDayMini(element);
   }
