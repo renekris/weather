@@ -1,6 +1,3 @@
-/* eslint-disable object-shorthand */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
 let map;
 
 function initMap() {

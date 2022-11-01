@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 const url = 'https://api.openweathermap.org/data/2.5/forecast';
 // not concealing the api key, since it's free
 const apiKey = '285f541ba6b93f37872dfd16ad3edb20';
@@ -37,7 +36,6 @@ export async function getNamedLocationWeatherData(location) {
 
 function getCurrentCoordinatesRaw() {
   return new Promise((resolve, reject) => {
-    // eslint-disable-next-line no-undef
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 }

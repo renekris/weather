@@ -1,7 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable no-undef */
-/* eslint-disable no-use-before-define */
-/* eslint no-unused-expressions: ["error", { "allowTernary": true }] */
 import { getCurrentLocationWeatherData, getNamedLocationWeatherData } from './weather-api';
 
 // DOM CACHE
@@ -34,12 +30,6 @@ function returnCurrentUnitTemp(kelvin) {
     ? temp = `${toCelsius(kelvin).toFixed(2)}°C`
     : temp = `${toFahrenheit(kelvin).toFixed(2)}°F`;
   return temp;
-}
-
-function toggleFormat() {
-  isFormatCelsius = !isFormatCelsius;
-  console.log(`isFormatCelsius: ${isFormatCelsius}`);
-  reloadDisplayData();
 }
 
 function displayCity() {
@@ -81,7 +71,6 @@ function displayDays() {
   const ELEMENTS_PER_DAY = 8
   for (let i = 0; i < activeLocationData.list.length; i += ELEMENTS_PER_DAY) {
     const element = activeLocationData.list[i];
-    console.log(element);
     displayDayMini(element);
   }
 }
@@ -90,6 +79,12 @@ function reloadDisplayData() {
   displayCity();
   displayCurrent();
   displayDays();
+}
+
+function toggleFormat() {
+  isFormatCelsius = !isFormatCelsius;
+  console.log(`isFormatCelsius: ${isFormatCelsius}`);
+  reloadDisplayData();
 }
 
 async function searchCity(e) {
