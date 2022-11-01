@@ -62,7 +62,6 @@ body {
 
 .forecast-data {
   display: grid;
-  margin: 1rem;
   width: 100%;
   height: 100%;
   background-color: #111;
@@ -73,17 +72,21 @@ body {
 
 .forecast-city {
   background-color: #444;
+  padding: 1rem;
   width: 100%;
   height: 100%;
 }
 
 .forecast-current {
   background-color: #444;
+  padding: 1rem;
   width: 100%;
   height: 100%;
 }
 
 .forecast-days {
+  display: flex;
+  padding: 1rem;
   background-color: #555;
   width: 100%;
   height: 100%;
@@ -91,9 +94,19 @@ body {
   grid-area: 2 / 1 / 3 / 3;
 }
 
+.forecast-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #222;
+  margin: 1rem;
+  height: max-content;
+  text-align: center;
+}
+
 /* FOOTER */
 .footer {
-  height: 100%;
-  width: 100%;
   background-color: #222;
 }

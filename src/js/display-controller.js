@@ -5,6 +5,7 @@ const elToggleFormat = document.getElementById('toggle-format');
 const elForm = document.getElementById('search');
 const elForecastCity = Array.from(document.getElementsByClassName('forecast-city'))[0];
 const elForecastCurrent = Array.from(document.getElementsByClassName('forecast-current'))[0]
+const elForecastDays = Array.from(document.getElementsByClassName('forecast-days'))[0];
 
 // EVENT LISTENERS
 elForm.addEventListener('submit', searchCity);
@@ -63,11 +64,29 @@ function displayCurrent() {
   elFeelsLike.textContent = `Feels like: ${returnCurrentUnitTemp(CURRENT_DATA_PATH.main.feels_like)}`;
 }
 
-function displayDayMini(locationData) {
+function getWeatherIconUrl(weatherIconName) {
+  const mainUrl = 'https://openweathermap.org/img/wn/';
+  return `${mainUrl}${weatherIconName}@2x.png`
+}
 
+function displayDayMini(locationData) {
+  const elCard = elForecastDays.appendChild(document.createElement('div'));
+  elCard.classList.add('forecast-card');
+
+  const elDate = elCard.appendChild(document.createElement('p'));
+  elDate.textContent = new Date(locationData.dt * 1000);
+
+  const elIcon = elCard.appendChild(document.createElement('img'));
+  // https://openweathermap.org/weather-conditions | http://openweathermap.org/img/wn/10d@2x.png
+  elIcon.src = getWeatherIconUrl(locationData.weather[0].icon);
+  elIcon.alt = locationData.weather[0].description;
+
+  const elTemp = elCard.appendChild(document.createElement('p'));
+  elTemp.textContent = `${returnCurrentUnitTemp(locationData.main.temp)}`;
 }
 
 function displayDays() {
+  elForecastDays.innerHTML = '';
   const ELEMENTS_PER_DAY = 8
   for (let i = 0; i < activeLocationData.list.length; i += ELEMENTS_PER_DAY) {
     const element = activeLocationData.list[i];
