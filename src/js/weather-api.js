@@ -18,7 +18,6 @@ function formatData(locationData) {
       coords: locationData.city.coord,
       country: locationData.city.country,
       name: locationData.city.name,
-      population: locationData.city.population,
     },
     list: locationData.list,
   }
