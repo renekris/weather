@@ -1,8 +1,9 @@
 import './index.css';
-import weatherInit from './js/weather-api';
+import { weatherInit, getNamedLocationWeatherData, getLocationWeatherData } from './js/weather-api';
 // import './js/map-api';
 
-(() => {
-  weatherInit();
+(async () => {
+  // weatherInit();
+  // console.log(await getNamedLocationWeatherData('Pirita'));
 })();
 

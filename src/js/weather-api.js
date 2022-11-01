@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-const url = 'https://api.openweathermap.org/data/2.5/weather';
+const url = 'https://api.openweathermap.org/data/2.5/forecast';
 // not concealing the api key, since it's free
 const apiKey = '285f541ba6b93f37872dfd16ad3edb20';
 
-async function getLocationWeather(lat, lon) {
-  const response = await fetch(`${url}?lat=${lat}&lon=${lon}&appid=${apiKey}`, { mode: 'cors' });
+async function fetchData(thisUrl) {
+  const response = await fetch(thisUrl, { mode: 'cors' });
   if (!response.ok) {
     throw new Error(`HTTP error: ${response.status}`);
   }
@@ -12,12 +12,15 @@ async function getLocationWeather(lat, lon) {
   return locationData;
 }
 
-async function getNamedLocationWeather(location) {
-  const response = await fetch(`${url}?q=${location}&appid=${apiKey}`, { mode: 'cors' });
-  if (!response.ok) {
-    throw new Error(`HTTP error: ${response.status}`);
-  }
-  const locationData = await response.json();
+export async function getLocationWeatherData(lat, lon) {
+  const thisUrl = `${url}?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+  const locationData = fetchData(thisUrl);
+  return locationData;
+}
+
+export async function getNamedLocationWeatherData(location) {
+  const thisUrl = `${url}?q=${location}&appid=${apiKey}`;
+  const locationData = fetchData(thisUrl);
   return locationData;
 }
 
@@ -36,9 +39,9 @@ async function getCurrentCoordinates() {
   }
 }
 
-export default async function weatherInit() {
+export async function weatherInit() {
   const currentPosition = await getCurrentCoordinates();
   console.log(currentPosition);
-  const locationData = await getLocationWeather(currentPosition.lat, currentPosition.lon);
+  const locationData = await getLocationWeatherData(currentPosition.lat, currentPosition.lon);
   console.log(locationData);
 }
