@@ -12,16 +12,28 @@ async function fetchData(thisUrl) {
   return locationData;
 }
 
+function formatData(locationData) {
+  return {
+    city: {
+      coords: locationData.city.coord,
+      country: locationData.city.country,
+      name: locationData.city.name,
+      population: locationData.city.population,
+    },
+    list: locationData.list,
+  }
+}
+
 export async function getLocationWeatherData(lat, lon) {
   const thisUrl = `${url}?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-  const locationData = fetchData(thisUrl);
-  return locationData;
+  const locationData = await fetchData(thisUrl);
+  return formatData(locationData);
 }
 
 export async function getNamedLocationWeatherData(location) {
   const thisUrl = `${url}?q=${location}&appid=${apiKey}`;
-  const locationData = fetchData(thisUrl);
-  return locationData;
+  const locationData = await fetchData(thisUrl);
+  return formatData(locationData);
 }
 
 function getCurrentCoordinatesRaw() {
@@ -39,9 +51,11 @@ async function getCurrentCoordinates() {
   }
 }
 
-export async function weatherInit() {
+export async function getCurrentLocationWeatherData() {
   const currentPosition = await getCurrentCoordinates();
   console.log(currentPosition);
   const locationData = await getLocationWeatherData(currentPosition.lat, currentPosition.lon);
-  console.log(locationData);
+  return formatData(locationData);
 }
+
+
