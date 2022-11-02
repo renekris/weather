@@ -41,16 +41,23 @@ function getCurrentCoordinatesRaw() {
 }
 
 async function getCurrentCoordinates() {
-  const rawData = await getCurrentCoordinatesRaw();
-  return {
-    lat: rawData.coords.latitude,
-    lon: rawData.coords.longitude,
+  try {
+    const rawData = await getCurrentCoordinatesRaw();
+    return {
+      lat: rawData.coords.latitude,
+      lon: rawData.coords.longitude,
+    }
+  } catch (error) {
+    console.warn('No access to user position');
+    return null;
   }
 }
 
 export async function getCurrentLocationWeatherData() {
   const currentPosition = await getCurrentCoordinates();
-  console.log(currentPosition);
+  if (currentPosition === null) {
+    return null;
+  }
   const locationData = await getLocationWeatherData(currentPosition.lat, currentPosition.lon);
   return locationData;
 }

@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import initMap from './map-api';
 import { getCurrentLocationWeatherData, getNamedLocationWeatherData } from './weather-api';
 
 // DOM CACHE
@@ -49,6 +50,11 @@ function displayCity() {
     const elCityLon = elForecastCity.appendChild(document.createElement('p'));
     elCityLon.textContent = `Lon: ${activeLocationData.city.coords.lon}`;
   }
+
+  const elMapDiv = elForecastCity.appendChild(document.createElement('div'));
+  elMapDiv.id = 'map';
+
+  initMap(activeLocationData.city.coords.lat, activeLocationData.city.coords.lon);
 }
 
 function displayCurrent() {
@@ -61,6 +67,7 @@ function displayCurrent() {
   const elIcon = elForecastCurrent.appendChild(document.createElement('img'));
   elIcon.src = getWeatherIconUrl(CURRENT_DATA_PATH.weather[0].icon, '4x');
   elIcon.alt = CURRENT_DATA_PATH.weather[0].description;
+  elIcon.title = CURRENT_DATA_PATH.weather[0].description;
 
   const elTime = elForecastCurrent.appendChild(document.createElement('p'));
   elTime.textContent = format(new Date(CURRENT_DATA_PATH.dt * 1000), 'p');
@@ -88,6 +95,7 @@ function displayDayMini(locationData) {
   const elIcon = elCard.appendChild(document.createElement('img'));
   elIcon.src = getWeatherIconUrl(locationData.weather[0].icon);
   elIcon.alt = locationData.weather[0].description;
+  elIcon.title = locationData.weather[0].description;
 
   const elTime = elCard.appendChild(document.createElement('p'));
   elTime.textContent = `${format(new Date(locationData.dt * 1000), 'p')}`;
@@ -126,10 +134,16 @@ function reloadDisplayData() {
   displayNote();
 }
 
+// to lessen the google map API queries <3
+function reloadFormat() {
+  displayCurrent();
+  displayDays();
+}
+
 function toggleFormat() {
   isFormatCelsius = !isFormatCelsius;
   console.log(`isFormatCelsius: ${isFormatCelsius}`);
-  reloadDisplayData();
+  reloadFormat();
 }
 
 async function searchCity(e) {
@@ -139,6 +153,13 @@ async function searchCity(e) {
 }
 
 export default async function initDisplay() {
-  setActiveLocationData(await getCurrentLocationWeatherData());
+  const currentLocationWeatherData = await getCurrentLocationWeatherData();
+
+  // has user declined location opt-in
+  if (currentLocationWeatherData === null) {
+    setActiveLocationData(await getNamedLocationWeatherData(elForm.search.value));
+  } else {
+    setActiveLocationData(currentLocationWeatherData);
+  }
   reloadDisplayData();
 }
