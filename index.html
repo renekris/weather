@@ -14,7 +14,7 @@
   <body>
     <div class="container">
       <header class="header">
-        <form id="search">
+        <form id="search" class="search-form">
           <label for="search">
             <input
               type="search"
@@ -25,17 +25,21 @@
           </label>
           <button type="submit">Search</button>
         </form>
-        <button id="toggle-format">Toggle format</button>
+        <button id="toggle-format">Toggle format (°C/°F)</button>
       </header>
       <div class="content">
-        <!-- <div id="map"></div> -->
         <div class="forecast-data">
-          <div class="forecast-city"></div>
+          <div class="forecast-city">
+            <!-- <div id="map"></div> -->
+          </div>
           <div class="forecast-current"></div>
           <div class="forecast-days"></div>
+          <div class="note"></div>
         </div>
       </div>
-      <footer class="footer"></footer>
+      <footer class="footer">
+        <p>© 2022 Renekris</p>
+      </footer>
     </div>
   </body>
 </html>
