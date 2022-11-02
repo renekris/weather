@@ -5,10 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="./bundle.js" defer></script>
-    <!-- <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&v=weekly"
       defer
-    ></script> -->
+    ></script>
     <title>Weather</title>
   </head>
   <body>
@@ -21,6 +21,7 @@
               name="city"
               id="search"
               placeholder="City Name..."
+              value="Tallinn"
             />
           </label>
           <button type="submit">Search</button>
@@ -29,9 +30,7 @@
       </header>
       <div class="content">
         <div class="forecast-data">
-          <div class="forecast-city">
-            <!-- <div id="map"></div> -->
-          </div>
+          <div class="forecast-city"></div>
           <div class="forecast-current"></div>
           <div class="forecast-days"></div>
           <div class="note"></div>
