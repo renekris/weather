@@ -70,11 +70,28 @@ body {
 
 /* CONTENT */
 .content {
+  position: relative;
   height: 100%;
   width: 100%;
   background-color: #111;
   display: flex;
   justify-content: center;
+}
+
+#loading {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: none;
+  z-index: -100;
+}
+
+#loading.shown {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  background-color: #11111199;
 }
 
 .forecast-data {
@@ -99,6 +116,22 @@ body {
 
 .forecast-city p {
   margin: 0.5rem;
+}
+
+.forecast-city p:nth-child(1) {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.forecast-city p:nth-child(2) {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.forecast-city p:nth-child(3),
+.forecast-city p:nth-child(4) {
+  margin: 0 0 0rem 0;
+  font-size: 0.8rem;
 }
 
 #map {

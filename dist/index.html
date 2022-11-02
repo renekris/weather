@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="./bundle.js" defer></script>
+
+    <!-- Map API is from google Map API documentation -->
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&v=weekly"
       defer
@@ -29,6 +31,7 @@
         <button id="toggle-format">Toggle format (°C/°F)</button>
       </header>
       <div class="content">
+        <div id="loading"></div>
         <div class="forecast-data">
           <div class="forecast-city"></div>
           <div class="forecast-current"></div>

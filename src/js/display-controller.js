@@ -1,14 +1,16 @@
 import { format } from 'date-fns';
 import initMap from './map-api';
 import { getCurrentLocationWeatherData, getNamedLocationWeatherData } from './weather-api';
+import loadingSvg from '../svg/loading.svg';
 
 // DOM CACHE
 const elToggleFormat = document.getElementById('toggle-format');
 const elForm = document.getElementById('search');
 const elForecastCity = Array.from(document.getElementsByClassName('forecast-city'))[0];
-const elForecastCurrent = Array.from(document.getElementsByClassName('forecast-current'))[0]
+const elForecastCurrent = Array.from(document.getElementsByClassName('forecast-current'))[0];
 const elForecastDays = Array.from(document.getElementsByClassName('forecast-days'))[0];
 const elForecastNote = Array.from(document.getElementsByClassName('note'))[0];
+const elLoading = document.getElementById('loading');
 
 // EVENT LISTENERS
 elForm.addEventListener('submit', searchCity);
@@ -35,6 +37,9 @@ function returnCurrentUnitTemp(kelvin) {
   return temp;
 }
 
+const elImg = elLoading.appendChild(document.createElement('img'));
+elImg.src = loadingSvg;
+
 function displayCity() {
   elForecastCity.innerHTML = '';
 
@@ -45,10 +50,8 @@ function displayCity() {
   elCityName.textContent = activeLocationData.city.name;
 
   if (activeLocationData.city.coords) {
-    const elCityLat = elForecastCity.appendChild(document.createElement('p'));
-    elCityLat.textContent = `Lat: ${activeLocationData.city.coords.lat}`;
-    const elCityLon = elForecastCity.appendChild(document.createElement('p'));
-    elCityLon.textContent = `Lon: ${activeLocationData.city.coords.lon}`;
+    const elCityCoords = elForecastCity.appendChild(document.createElement('p'));
+    elCityCoords.textContent = `Lat: ${activeLocationData.city.coords.lat} Lon: ${activeLocationData.city.coords.lon}`;
   }
 
   const elMapDiv = elForecastCity.appendChild(document.createElement('div'));
@@ -128,16 +131,26 @@ function displayNote() {
 }
 
 function reloadDisplayData() {
+  startLoading();
   displayCity();
   displayCurrent();
   displayDays();
   displayNote();
+  finishLoading();
 }
 
 // to lessen the google map API queries <3
 function reloadFormat() {
   displayCurrent();
   displayDays();
+}
+
+function startLoading() {
+  elLoading.classList.add('shown');
+}
+
+function finishLoading() {
+  elLoading.classList.remove('shown');
 }
 
 function toggleFormat() {
@@ -148,11 +161,13 @@ function toggleFormat() {
 
 async function searchCity(e) {
   e.preventDefault();
+  startLoading();
   setActiveLocationData(await getNamedLocationWeatherData(e.target.search.value));
   reloadDisplayData();
 }
 
 export default async function initDisplay() {
+  startLoading();
   const currentLocationWeatherData = await getCurrentLocationWeatherData();
 
   // has user declined location opt-in
