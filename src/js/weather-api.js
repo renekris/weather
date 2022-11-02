@@ -52,7 +52,7 @@ export async function getCurrentLocationWeatherData() {
   const currentPosition = await getCurrentCoordinates();
   console.log(currentPosition);
   const locationData = await getLocationWeatherData(currentPosition.lat, currentPosition.lon);
-  return formatData(locationData);
+  return locationData;
 }
 
 

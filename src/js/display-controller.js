@@ -7,6 +7,7 @@ const elForm = document.getElementById('search');
 const elForecastCity = Array.from(document.getElementsByClassName('forecast-city'))[0];
 const elForecastCurrent = Array.from(document.getElementsByClassName('forecast-current'))[0]
 const elForecastDays = Array.from(document.getElementsByClassName('forecast-days'))[0];
+const elForecastNote = Array.from(document.getElementsByClassName('note'))[0];
 
 // EVENT LISTENERS
 elForm.addEventListener('submit', searchCity);
@@ -20,7 +21,6 @@ let isFormatCelsius = true;
 
 function setActiveLocationData(locationData) {
   activeLocationData = locationData;
-  console.log(activeLocationData);
 }
 
 const toCelsius = (value) => value - 273.15;
@@ -37,17 +37,17 @@ function returnCurrentUnitTemp(kelvin) {
 function displayCity() {
   elForecastCity.innerHTML = '';
 
-  const elCityName = elForecastCity.appendChild(document.createElement('p'));
-  elCityName.textContent = activeLocationData.city.name;
-
   const elCityCountry = elForecastCity.appendChild(document.createElement('p'));
   elCityCountry.textContent = regionNames.of(activeLocationData.city.country);
 
+  const elCityName = elForecastCity.appendChild(document.createElement('p'));
+  elCityName.textContent = activeLocationData.city.name;
+
   if (activeLocationData.city.coords) {
-    const elCityCoords = elForecastCity.appendChild(document.createElement('p'));
-    elCityCoords.textContent =
-      `Lat: ${activeLocationData.city.coords.lat}
-       Lon: ${activeLocationData.city.coords.lon}`;
+    const elCityLat = elForecastCity.appendChild(document.createElement('p'));
+    elCityLat.textContent = `Lat: ${activeLocationData.city.coords.lat}`;
+    const elCityLon = elForecastCity.appendChild(document.createElement('p'));
+    elCityLon.textContent = `Lon: ${activeLocationData.city.coords.lon}`;
   }
 }
 
@@ -58,6 +58,13 @@ function displayCurrent() {
   const elDate = elForecastCurrent.appendChild(document.createElement('p'));
   elDate.textContent = format(new Date(CURRENT_DATA_PATH.dt * 1000), 'cccc do');
 
+  const elIcon = elForecastCurrent.appendChild(document.createElement('img'));
+  elIcon.src = getWeatherIconUrl(CURRENT_DATA_PATH.weather[0].icon, '4x');
+  elIcon.alt = CURRENT_DATA_PATH.weather[0].description;
+
+  const elTime = elForecastCurrent.appendChild(document.createElement('p'));
+  elTime.textContent = format(new Date(CURRENT_DATA_PATH.dt * 1000), 'p');
+
   const elTemp = elForecastCurrent.appendChild(document.createElement('p'));
   elTemp.textContent = `Temp: ${returnCurrentUnitTemp(CURRENT_DATA_PATH.main.temp)}`;
 
@@ -65,10 +72,10 @@ function displayCurrent() {
   elFeelsLike.textContent = `Feels like: ${returnCurrentUnitTemp(CURRENT_DATA_PATH.main.feels_like)}`;
 }
 
-function getWeatherIconUrl(weatherIconName) {
+function getWeatherIconUrl(weatherIconName, size = '2x') {
   // https://openweathermap.org/weather-conditions | http://openweathermap.org/img/wn/10d@2x.png
   const mainUrl = 'https://openweathermap.org/img/wn/';
-  return `${mainUrl}${weatherIconName}@2x.png`
+  return `${mainUrl}${weatherIconName}@${size}.png`
 }
 
 function displayDayMini(locationData) {
@@ -82,8 +89,13 @@ function displayDayMini(locationData) {
   elIcon.src = getWeatherIconUrl(locationData.weather[0].icon);
   elIcon.alt = locationData.weather[0].description;
 
+  const elTime = elCard.appendChild(document.createElement('p'));
+  elTime.textContent = `${format(new Date(locationData.dt * 1000), 'p')}`;
+  elTime.classList.add('card-time');
+
   const elTemp = elCard.appendChild(document.createElement('p'));
   elTemp.textContent = `${returnCurrentUnitTemp(locationData.main.temp)}`;
+  elTemp.classList.add('card-temp');
 }
 
 function displayDays() {
@@ -100,10 +112,18 @@ function displayDays() {
   }
 }
 
+function displayNote() {
+  elForecastNote.innerHTML = '';
+  const elNotePara = elForecastNote.appendChild(document.createElement('p'));
+  elNotePara.textContent = 'Due to the limitations of the free API, I cannot extract more specific data in a more accurate state.';
+  elNotePara.classList.add('note');
+}
+
 function reloadDisplayData() {
   displayCity();
   displayCurrent();
   displayDays();
+  displayNote();
 }
 
 function toggleFormat() {
