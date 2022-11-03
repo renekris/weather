@@ -24,6 +24,7 @@ let isFormatCelsius = true;
 
 function setActiveLocationData(locationData) {
   activeLocationData = locationData;
+  console.log(activeLocationData);
 }
 
 const toCelsius = (value) => value - 273.15;
@@ -62,24 +63,24 @@ function displayCity() {
 
 function displayCurrent() {
   elForecastCurrent.innerHTML = '';
-  const CURRENT_DATA_PATH = activeLocationData.list[0];
+  const todayData = activeLocationData.sortedByDate[0].list[0];
 
   const elDate = elForecastCurrent.appendChild(document.createElement('p'));
-  elDate.textContent = format(new Date(CURRENT_DATA_PATH.dt * 1000), 'cccc do');
+  elDate.textContent = format(new Date(todayData.dt * 1000), 'cccc do');
 
   const elIcon = elForecastCurrent.appendChild(document.createElement('img'));
-  elIcon.src = getWeatherIconUrl(CURRENT_DATA_PATH.weather[0].icon, '4x');
-  elIcon.alt = CURRENT_DATA_PATH.weather[0].description;
-  elIcon.title = CURRENT_DATA_PATH.weather[0].description;
+  elIcon.src = getWeatherIconUrl(todayData.weather[0].icon, '4x');
+  elIcon.alt = todayData.weather[0].description;
+  elIcon.title = todayData.weather[0].description;
 
   const elTime = elForecastCurrent.appendChild(document.createElement('p'));
-  elTime.textContent = format(new Date(CURRENT_DATA_PATH.dt * 1000), 'p');
+  elTime.textContent = format(new Date(todayData.dt * 1000), 'HH:mm');
 
   const elTemp = elForecastCurrent.appendChild(document.createElement('p'));
-  elTemp.textContent = `Temp: ${returnCurrentUnitTemp(CURRENT_DATA_PATH.main.temp)}`;
+  elTemp.textContent = `Temp: ${returnCurrentUnitTemp(todayData.main.temp)}`;
 
   const elFeelsLike = elForecastCurrent.appendChild(document.createElement('p'));
-  elFeelsLike.textContent = `Feels like: ${returnCurrentUnitTemp(CURRENT_DATA_PATH.main.feels_like)}`;
+  elFeelsLike.textContent = `Feels like: ${returnCurrentUnitTemp(todayData.main.feels_like)}`;
 }
 
 function getWeatherIconUrl(weatherIconName, size = '2x') {
@@ -88,38 +89,44 @@ function getWeatherIconUrl(weatherIconName, size = '2x') {
   return `${mainUrl}${weatherIconName}@${size}.png`
 }
 
-function displayDayMini(locationData) {
+function displayDayMini(dateListObj) {
+
   const elCard = elForecastDays.appendChild(document.createElement('div'));
   elCard.classList.add('forecast-card');
 
   const elDate = elCard.appendChild(document.createElement('p'));
-  elDate.textContent = format(new Date(locationData.dt * 1000), 'cccc do');
+  elDate.textContent = format(new Date(dateListObj.list[0].dt * 1000), 'cccc do');
+  elDate.classList.add('forecast-card-date');
 
-  const elIcon = elCard.appendChild(document.createElement('img'));
-  elIcon.src = getWeatherIconUrl(locationData.weather[0].icon);
-  elIcon.alt = locationData.weather[0].description;
-  elIcon.title = locationData.weather[0].description;
+  for (let i = 0; i < dateListObj.list.length; i += 1) {
+    const threeHourData = dateListObj.list[i];
 
-  const elTime = elCard.appendChild(document.createElement('p'));
-  elTime.textContent = `${format(new Date(locationData.dt * 1000), 'p')}`;
-  elTime.classList.add('card-time');
+    const elCardItem = elCard.appendChild(document.createElement('div'));
+    elCardItem.classList.add('forecast-card-item');
 
-  const elTemp = elCard.appendChild(document.createElement('p'));
-  elTemp.textContent = `${returnCurrentUnitTemp(locationData.main.temp)}`;
-  elTemp.classList.add('card-temp');
+    const elIcon = elCardItem.appendChild(document.createElement('img'));
+    elIcon.src = getWeatherIconUrl(threeHourData.weather[0].icon);
+    elIcon.alt = threeHourData.weather[0].description;
+    elIcon.title = threeHourData.weather[0].description;
+
+    const elTimeTempDiv = elCardItem.appendChild(document.createElement('div'));
+    elTimeTempDiv.classList.add('time-temperature');
+
+    const elTime = elTimeTempDiv.appendChild(document.createElement('p'));
+    elTime.textContent = `${format(new Date(threeHourData.dt * 1000), 'HH:mm')}`;
+    elTime.classList.add('card-time');
+
+    const elTemp = elTimeTempDiv.appendChild(document.createElement('p'));
+    elTemp.textContent = `${returnCurrentUnitTemp(threeHourData.main.temp)}`;
+    elTemp.classList.add('card-temp');
+  }
 }
 
 function displayDays() {
   elForecastDays.innerHTML = '';
-  let skipFirstDayLatch = true;
-  const ELEMENTS_PER_DAY = 8
-  for (let i = 0; i < activeLocationData.list.length; i += ELEMENTS_PER_DAY) {
-    if (skipFirstDayLatch) {
-      skipFirstDayLatch = false;
-      i += ELEMENTS_PER_DAY;
-    }
-    const element = activeLocationData.list[i];
-    displayDayMini(element);
+  for (let i = 1; i < activeLocationData.sortedByDate.length; i += 1) {
+    const dateListObj = activeLocationData.sortedByDate[i];
+    displayDayMini(dateListObj);
   }
 }
 
@@ -139,7 +146,6 @@ function reloadDisplayData() {
   finishLoading();
 }
 
-// to lessen the google map API queries <3
 function reloadFormat() {
   displayCurrent();
   displayDays();
