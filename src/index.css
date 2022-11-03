@@ -42,7 +42,7 @@ body {
   height: 100%;
   width: 80%;
 
-  grid-template-rows: 1fr 10fr 0.5fr;
+  grid-template-rows: 0.6fr 10fr 0.5fr;
 }
 
 /* HEADER */
@@ -51,7 +51,8 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: #111;
-  max-height: 4rem;
+  min-height: 4.5rem;
+  height: 100%;
 }
 
 .header > * {
@@ -122,7 +123,7 @@ body {
 .forecast-data {
   display: grid;
   width: 100%;
-  height: max-content;
+  min-height: 100%;
   background-color: #111;
   color: white;
   grid-template-columns: 1fr 3fr;
@@ -166,17 +167,68 @@ body {
 
 .forecast-current {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  align-items: flex-start;
   background-color: #222;
   padding: 1rem;
   width: 100%;
   height: 100%;
+
+  overflow: auto;
+}
+
+.current-title-date {
+  margin: 0 !important;
+  font-size: 1.2rem;
 }
 
 .forecast-current p {
   margin: 0.5rem;
+}
+
+.current-div {
+  display: flex;
+  grid-auto-flow: column;
+  align-items: center;
+}
+
+.current-div-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 8rem;
+}
+
+.current-div-item:nth-child(odd) {
+  background-color: #2a2a2a;
+}
+
+.current-div-item:nth-child(even) {
+  background-color: #1a1a1a;
+}
+
+.current-div-item:first-of-type {
+  animation-name: pulse-active;
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease;
+}
+
+@keyframes pulse-active {
+  0% {
+    background-color: #2a2a2a;
+  }
+  50% {
+    background-color: #333;
+  }
+  100% {
+    background-color: #2a2a2a;
+  }
+}
+
+.current-div-item > img {
+  width: 6rem;
 }
 
 .forecast-days {
@@ -198,6 +250,8 @@ body {
   background-color: #2a2a2a;
   margin: 1rem;
   flex: 1;
+  height: max-content;
+  min-width: 10rem;
 
   box-shadow: 0 0 0.5rem 0.1rem #ffffff13;
 }
@@ -239,7 +293,7 @@ body {
   flex-direction: column;
   align-items: start;
   justify-content: center;
-  margin: 0 2rem 0 0;
+  margin: 0 0 0 0.5rem;
   height: 100%;
   width: 100%;
 }

@@ -22,6 +22,13 @@ const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 let activeLocationData;
 let isFormatCelsius = true;
 
+function clearElement(element) {
+  while (element.firstChild) {
+    // .remove() also removes the listeners and observers
+    element.firstChild.remove();
+  }
+}
+
 function displayNotFound() {
   const elPreExistingMessage = document.querySelector('.error-message');
   if (elPreExistingMessage) {
@@ -60,7 +67,7 @@ const elImg = elLoading.appendChild(document.createElement('img'));
 elImg.src = loadingSvg;
 
 function displayCity() {
-  elForecastCity.innerHTML = '';
+  clearElement(elForecastCity);
 
   const elCityCountry = elForecastCity.appendChild(document.createElement('p'));
   elCityCountry.textContent = regionNames.of(activeLocationData.city.country);
@@ -80,25 +87,37 @@ function displayCity() {
 }
 
 function displayCurrent() {
-  elForecastCurrent.innerHTML = '';
-  const todayData = activeLocationData.sortedByDate[0].list[0];
+  clearElement(elForecastCurrent);
 
   const elDate = elForecastCurrent.appendChild(document.createElement('p'));
-  elDate.textContent = format(new Date(todayData.dt * 1000), 'cccc do');
+  elDate.textContent = format(new Date(activeLocationData.sortedByDate[0].list[0].dt * 1000), 'cccc do');
+  elDate.classList.add('current-title-date');
 
-  const elIcon = elForecastCurrent.appendChild(document.createElement('img'));
-  elIcon.src = getWeatherIconUrl(todayData.weather[0].icon, '4x');
-  elIcon.alt = todayData.weather[0].description;
-  elIcon.title = todayData.weather[0].description;
+  const elCurrentDiv = elForecastCurrent.appendChild(document.createElement('div'));
+  elCurrentDiv.classList.add('current-div');
 
-  const elTime = elForecastCurrent.appendChild(document.createElement('p'));
-  elTime.textContent = format(new Date(todayData.dt * 1000), 'HH:mm');
+  for (let i = 0; i < activeLocationData.sortedByDate[0].list.length; i += 1) {
+    const threeHourData = activeLocationData.sortedByDate[0].list[i];
 
-  const elTemp = elForecastCurrent.appendChild(document.createElement('p'));
-  elTemp.textContent = `Temp: ${returnCurrentUnitTemp(todayData.main.temp)}`;
+    const elCurrentItemDiv = elCurrentDiv.appendChild(document.createElement('div'));
+    elCurrentItemDiv.classList.add('current-div-item');
 
-  const elFeelsLike = elForecastCurrent.appendChild(document.createElement('p'));
-  elFeelsLike.textContent = `Feels like: ${returnCurrentUnitTemp(todayData.main.feels_like)}`;
+
+    const elIcon = elCurrentItemDiv.appendChild(document.createElement('img'));
+    elIcon.src = getWeatherIconUrl(threeHourData.weather[0].icon, '4x');
+    elIcon.alt = threeHourData.weather[0].description;
+    elIcon.title = threeHourData.weather[0].description;
+
+    const elTime = elCurrentItemDiv.appendChild(document.createElement('p'));
+    elTime.textContent = format(new Date(threeHourData.dt * 1000), 'HH:mm');
+
+    const elTemp = elCurrentItemDiv.appendChild(document.createElement('p'));
+    elTemp.textContent = `Temp: ${returnCurrentUnitTemp(threeHourData.main.temp)}`;
+
+    const elFeelsLike = elCurrentItemDiv.appendChild(document.createElement('p'));
+    elFeelsLike.textContent = `Feels: ${returnCurrentUnitTemp(threeHourData.main.feels_like)}`;
+  }
+
 }
 
 function getWeatherIconUrl(weatherIconName, size = '2x') {
@@ -108,7 +127,6 @@ function getWeatherIconUrl(weatherIconName, size = '2x') {
 }
 
 function displayDayMini(dateListObj) {
-
   const elCard = elForecastDays.appendChild(document.createElement('div'));
   elCard.classList.add('forecast-card');
 
@@ -141,7 +159,7 @@ function displayDayMini(dateListObj) {
 }
 
 function displayDays() {
-  elForecastDays.innerHTML = '';
+  clearElement(elForecastDays);
   for (let i = 1; i < activeLocationData.sortedByDate.length; i += 1) {
     const dateListObj = activeLocationData.sortedByDate[i];
     displayDayMini(dateListObj);
@@ -149,7 +167,7 @@ function displayDays() {
 }
 
 function displayNote() {
-  elForecastNote.innerHTML = '';
+  clearElement(elForecastNote);
   const elNotePara = elForecastNote.appendChild(document.createElement('p'));
   elNotePara.textContent = 'Due to the limitations of the free API, I cannot extract more specific data in a more accurate state.';
   elNotePara.classList.add('note');
