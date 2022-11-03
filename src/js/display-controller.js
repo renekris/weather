@@ -22,9 +22,27 @@ const regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
 let activeLocationData;
 let isFormatCelsius = true;
 
+function displayNotFound() {
+  const elPreExistingMessage = document.querySelector('.error-message');
+  if (elPreExistingMessage) {
+    elPreExistingMessage.remove();
+  }
+  const elError = elForm.appendChild(document.createElement('p'));
+  elError.textContent = 'Location not found';
+  elError.classList.add('error-message');
+  elError.addEventListener('animationend', (e) => {
+    e.target.remove();
+  });
+}
+
 function setActiveLocationData(locationData) {
+  if (locationData === 0) {
+    displayNotFound();
+    return false;
+  }
   activeLocationData = locationData;
   console.log(activeLocationData);
+  return true;
 }
 
 const toCelsius = (value) => value - 273.15;
@@ -168,19 +186,27 @@ function toggleFormat() {
 async function searchCity(e) {
   e.preventDefault();
   startLoading();
-  setActiveLocationData(await getNamedLocationWeatherData(e.target.search.value));
-  reloadDisplayData();
+  const isDataSet = setActiveLocationData(await getNamedLocationWeatherData(e.target.search.value));
+  if (isDataSet) {
+    reloadDisplayData();
+  } else {
+    finishLoading();
+  }
 }
 
 export default async function initDisplay() {
   startLoading();
   const currentLocationWeatherData = await getCurrentLocationWeatherData();
-
+  let isDataSet = false;
   // has user declined location opt-in
   if (currentLocationWeatherData === null) {
-    setActiveLocationData(await getNamedLocationWeatherData(elForm.search.value));
+    isDataSet = setActiveLocationData(await getNamedLocationWeatherData(elForm.search.value));
   } else {
-    setActiveLocationData(currentLocationWeatherData);
+    isDataSet = setActiveLocationData(currentLocationWeatherData);
   }
-  reloadDisplayData();
+  if (isDataSet) {
+    reloadDisplayData();
+  } else {
+    finishLoading();
+  }
 }

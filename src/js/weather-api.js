@@ -46,15 +46,20 @@ async function fetchData(thisUrl) {
   return formattedData;
 }
 
+function fetchErrorHandle(error) {
+  console.warn(error);
+  return 0;
+}
+
 export async function getLocationWeatherData(lat, lon) {
   const thisUrl = `${url}?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-  const locationData = await fetchData(thisUrl);
-  return locationData
+  const locationData = await fetchData(thisUrl).catch(fetchErrorHandle);
+  return locationData;
 }
 
 export async function getNamedLocationWeatherData(location) {
   const thisUrl = `${url}?q=${location}&appid=${apiKey}`;
-  const locationData = await fetchData(thisUrl);
+  const locationData = await fetchData(thisUrl).catch(fetchErrorHandle);
   return locationData;
 }
 
