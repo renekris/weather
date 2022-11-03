@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { addSeconds, format } from 'date-fns';
 import initMap from './map-api';
 import { getCurrentLocationWeatherData, getNamedLocationWeatherData } from './weather-api';
 import loadingSvg from '../svg/loading.svg';
@@ -54,28 +54,57 @@ function setActiveLocationData(locationData) {
   return true;
 }
 
-const toCelsius = (value) => value - 273.15;
-const toFahrenheit = (value) => (value - 273.15) * (9 / 5) + 32;
+const kelvinToCelsius = (kelvin) => kelvin - 273.15;
+const kelvinToFahrenheit = (kelvin) => (kelvin - 273.15) * (9 / 5) + 32;
 
 function returnCurrentUnitTemp(kelvin) {
   let temp;
   isFormatCelsius
-    ? temp = `${toCelsius(kelvin).toFixed(2)}°C`
-    : temp = `${toFahrenheit(kelvin).toFixed(2)}°F`;
+    ? temp = `${kelvinToCelsius(kelvin).toFixed(2)}°C`
+    : temp = `${kelvinToFahrenheit(kelvin).toFixed(2)}°F`;
   return temp;
 }
 
 const elImg = elLoading.appendChild(document.createElement('img'));
 elImg.src = loadingSvg;
 
+const runningClockIdArray = [];
+
+function writeTime(element, id, stopped) {
+  const time = `Local Time: ${addSeconds(Date.now(), activeLocationData.city.timezone).toUTCString().match(/[0-9]+:[0-9]+:[0-9]+/)}`;
+  // eslint-disable-next-line no-param-reassign
+  element.textContent = time;
+  console.log('clock update');
+  if (!runningClockIdArray.includes(id)) {
+    // eslint-disable-next-line no-param-reassign
+    stopped = true;
+    console.log('old clock has been stopped');
+  }
+  createClock(element, id, stopped);
+}
+
+function createClock(element, id, stopped) {
+  if (stopped === false) {
+    setTimeout(() => writeTime(element, id, false), 1000);
+  }
+};
+
 function displayCity() {
   clearElement(elForecastCity);
 
   const elCityCountry = elForecastCity.appendChild(document.createElement('p'));
-  elCityCountry.textContent = regionNames.of(activeLocationData.city.country);
-
+  elCityCountry.textContent = `${regionNames.of(activeLocationData.city.country)}`;
+  elCityCountry.classList.add('country-time');
   const elCityName = elForecastCity.appendChild(document.createElement('p'));
   elCityName.textContent = activeLocationData.city.name;
+
+  runningClockIdArray.splice(0, 1);
+  const elLocalClock = elForecastCity.appendChild(document.createElement('p'));
+  elLocalClock.id = 'local-clock';
+  elLocalClock.textContent = `Local Time: ${addSeconds(Date.now(), activeLocationData.city.timezone).toUTCString().match(/[0-9]+:[0-9]+:[0-9]+/)}`;
+  const clockId = crypto.randomUUID();
+  runningClockIdArray.push(clockId);
+  createClock(elLocalClock, clockId, false);
 
   if (activeLocationData.city.coord) {
     const elCityCoords = elForecastCity.appendChild(document.createElement('p'));
@@ -92,8 +121,13 @@ function displayCurrent() {
   clearElement(elForecastCurrent);
 
   const elDate = elForecastCurrent.appendChild(document.createElement('p'));
-  elDate.textContent = format(new Date(activeLocationData.sortedByDate[0].list[0].dt * 1000), 'cccc do');
   elDate.classList.add('current-title-date');
+  elDate.textContent = format(new Date(
+    (activeLocationData.sortedByDate[0].list[0].timeWithTimeZone).getUTCFullYear(),
+    (activeLocationData.sortedByDate[0].list[0].timeWithTimeZone).getUTCMonth(),
+    (activeLocationData.sortedByDate[0].list[0].timeWithTimeZone).getUTCDate()
+  ), 'cccc do');
+
 
   const elCurrentDiv = elForecastCurrent.appendChild(document.createElement('div'));
   elCurrentDiv.classList.add('current-div');
@@ -111,7 +145,7 @@ function displayCurrent() {
     elIcon.title = threeHourData.weather[0].description;
 
     const elTime = elCurrentItemDiv.appendChild(document.createElement('p'));
-    elTime.textContent = format(new Date(threeHourData.dt * 1000), 'HH:mm');
+    elTime.textContent = `${threeHourData.timeWithTimeZone.getUTCHours()}:00`;
 
     const elTemp = elCurrentItemDiv.appendChild(document.createElement('p'));
     elTemp.textContent = `Temp: ${returnCurrentUnitTemp(threeHourData.main.temp)}`;
@@ -133,8 +167,13 @@ function displayDayMini(dateListObj) {
   elCard.classList.add('forecast-card');
 
   const elDate = elCard.appendChild(document.createElement('p'));
-  elDate.textContent = format(new Date(dateListObj.list[0].dt * 1000), 'cccc do');
   elDate.classList.add('forecast-card-date');
+  elDate.textContent = format(new Date(
+    (dateListObj.list[0].timeWithTimeZone).getUTCFullYear(),
+    (dateListObj.list[0].timeWithTimeZone).getUTCMonth(),
+    (dateListObj.list[0].timeWithTimeZone).getUTCDate()
+  ), 'cccc do');
+
 
   for (let i = 0; i < dateListObj.list.length; i += 1) {
     const threeHourData = dateListObj.list[i];
@@ -151,7 +190,7 @@ function displayDayMini(dateListObj) {
     elTimeTempDiv.classList.add('time-temperature');
 
     const elTime = elTimeTempDiv.appendChild(document.createElement('p'));
-    elTime.textContent = `${format(new Date(threeHourData.dt * 1000), 'HH:mm')}`;
+    elTime.textContent = `${threeHourData.timeWithTimeZone.getUTCHours()}:00`;
     elTime.classList.add('card-time');
 
     const elTemp = elTimeTempDiv.appendChild(document.createElement('p'));

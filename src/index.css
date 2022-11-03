@@ -161,23 +161,21 @@ body {
 }
 
 .forecast-city p {
-  margin: 0.5rem;
-}
-
-.forecast-city p:nth-child(1) {
-  margin-top: 0;
+  margin-top: 0rem !important;
+  margin-bottom: 0.1rem !important;
+  text-align: center;
   font-size: 1.2rem;
 }
 
-.forecast-city p:nth-child(2) {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
+.forecast-city p:nth-child(4) {
+  margin-top: 0;
+  font-size: 0.7rem;
 }
 
-.forecast-city p:nth-child(3),
-.forecast-city p:nth-child(4) {
-  margin: 0 0 0rem 0;
-  font-size: 0.8rem;
+#local-clock {
+  margin: 0.2rem;
+  font-size: 1.2rem;
+  /* font-weight: bold; */
 }
 
 #map {

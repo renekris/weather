@@ -11,12 +11,17 @@ function formatData(locationData, sortedData) {
 
 function sortData(locationData) {
   const filteredByDates = [];
+  const timeZone = locationData.city.timezone;
+  console.log(locationData);
 
-  let activeDate = '';
+  let activeDate = new Date(1);
   for (let i = 0; i < locationData.list.length; i += 1) {
     const threeHourData = locationData.list[i];
-    const currentDate = threeHourData.dt_txt.split(' ')[0];
-    if (activeDate !== currentDate) {
+
+    const currentDate = new Date((threeHourData.dt + timeZone) * 1000);
+    threeHourData.timeWithTimeZone = currentDate;
+
+    if (activeDate.getUTCDate() !== currentDate.getUTCDate()) {
       activeDate = currentDate;
       const structuredObject = {
         date: activeDate,
