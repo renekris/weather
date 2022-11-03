@@ -4,11 +4,7 @@ const apiKey = '285f541ba6b93f37872dfd16ad3edb20';
 
 function formatData(locationData, sortedData) {
   return {
-    city: {
-      coords: locationData.city.coord,
-      country: locationData.city.country,
-      name: locationData.city.name,
-    },
+    city: locationData.city,
     sortedByDate: sortedData,
   }
 }
@@ -77,7 +73,7 @@ async function getCurrentCoordinates() {
       lon: rawData.coords.longitude,
     }
   } catch (error) {
-    console.warn('No access to user coordinates');
+    console.warn(error.message);
     return null;
   }
 }

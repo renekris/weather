@@ -51,12 +51,13 @@ body {
   justify-content: space-between;
   align-items: center;
   background-color: #111;
+  padding: 0 1rem;
   min-height: 4.5rem;
   height: 100%;
 }
 
 .header > * {
-  margin: 0 2rem;
+  margin: 0 0.5rem;
 }
 
 .search-form {
@@ -64,6 +65,7 @@ body {
   justify-content: inherit;
   align-items: inherit;
   height: 100%;
+  margin: 0;
 }
 
 .header input,
@@ -74,8 +76,26 @@ body {
   border: none;
 }
 
+.header input {
+  text-indent: 0.5rem;
+}
+
 .header button {
   cursor: pointer;
+  margin: 0;
+}
+
+.header button[type="button"] {
+  margin: 0 0.5rem 0 0;
+}
+
+#location-share {
+  background-image: url(./svg/map-pin.svg);
+  background-repeat: no-repeat;
+  background-size: 1.5rem;
+  background-position: center;
+  width: 2rem;
+  height: 2rem;
 }
 
 .error-message {
@@ -190,6 +210,7 @@ body {
   display: flex;
   grid-auto-flow: column;
   align-items: center;
+  margin: 1rem 0 0 0;
 }
 
 .current-div-item {
@@ -197,22 +218,24 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 0 0.5rem 0 0.5rem;
   min-width: 8rem;
 }
 
-.current-div-item:nth-child(odd) {
-  background-color: #2a2a2a;
+.current-div-item:first-of-type {
+  margin: 0 0.5rem 0 0;
 }
 
-.current-div-item:nth-child(even) {
-  background-color: #1a1a1a;
+.current-div-item {
+  box-shadow: 0 0 0.8rem 0.3rem #2a2a2aff;
+  background-color: #2a2a2a;
 }
 
 .current-div-item:first-of-type {
   animation-name: pulse-active;
-  animation-duration: 2s;
+  animation-duration: 2.5s;
   animation-iteration-count: infinite;
-  animation-timing-function: ease;
+  animation-timing-function: ease-in;
 }
 
 @keyframes pulse-active {
@@ -220,7 +243,7 @@ body {
     background-color: #2a2a2a;
   }
   50% {
-    background-color: #333;
+    background-color: #333333;
   }
   100% {
     background-color: #2a2a2a;
@@ -252,7 +275,6 @@ body {
   flex: 1;
   height: max-content;
   min-width: 10rem;
-
   box-shadow: 0 0 0.5rem 0.1rem #ffffff13;
 }
 
@@ -326,6 +348,6 @@ body {
   justify-content: center;
   align-items: center;
   background-color: #111;
-  color: white;
+  color: #aaa;
   font-size: 0.75rem;
 }

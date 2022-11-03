@@ -6,6 +6,7 @@ import loadingSvg from '../svg/loading.svg';
 // DOM CACHE
 const elToggleFormat = document.getElementById('toggle-format');
 const elForm = document.getElementById('search');
+const elLocationButton = document.getElementById('location-share');
 const elForecastCity = Array.from(document.getElementsByClassName('forecast-city'))[0];
 const elForecastCurrent = Array.from(document.getElementsByClassName('forecast-current'))[0];
 const elForecastDays = Array.from(document.getElementsByClassName('forecast-days'))[0];
@@ -14,6 +15,7 @@ const elLoading = document.getElementById('loading');
 
 // EVENT LISTENERS
 elForm.addEventListener('submit', searchCity);
+elLocationButton.addEventListener('click', () => initDisplay())
 elToggleFormat.addEventListener('click', () => toggleFormat());
 
 // credit: https://bobbyhadz.com/blog/javascript-get-country-name-from-country-code
@@ -29,13 +31,13 @@ function clearElement(element) {
   }
 }
 
-function displayNotFound() {
+function displayErrorMessage(msg) {
   const elPreExistingMessage = document.querySelector('.error-message');
   if (elPreExistingMessage) {
     elPreExistingMessage.remove();
   }
   const elError = elForm.appendChild(document.createElement('p'));
-  elError.textContent = 'Location not found';
+  elError.textContent = msg;
   elError.classList.add('error-message');
   elError.addEventListener('animationend', (e) => {
     e.target.remove();
@@ -44,7 +46,7 @@ function displayNotFound() {
 
 function setActiveLocationData(locationData) {
   if (locationData === 0) {
-    displayNotFound();
+    displayErrorMessage('Location not found');
     return false;
   }
   activeLocationData = locationData;
@@ -75,15 +77,15 @@ function displayCity() {
   const elCityName = elForecastCity.appendChild(document.createElement('p'));
   elCityName.textContent = activeLocationData.city.name;
 
-  if (activeLocationData.city.coords) {
+  if (activeLocationData.city.coord) {
     const elCityCoords = elForecastCity.appendChild(document.createElement('p'));
-    elCityCoords.textContent = `Lat: ${activeLocationData.city.coords.lat} Lon: ${activeLocationData.city.coords.lon}`;
+    elCityCoords.textContent = `Lat: ${activeLocationData.city.coord.lat} Lon: ${activeLocationData.city.coord.lon}`;
   }
 
   const elMapDiv = elForecastCity.appendChild(document.createElement('div'));
   elMapDiv.id = 'map';
 
-  initMap(activeLocationData.city.coords.lat, activeLocationData.city.coords.lon);
+  initMap(activeLocationData.city.coord.lat, activeLocationData.city.coord.lon);
 }
 
 function displayCurrent() {
@@ -219,6 +221,7 @@ export default async function initDisplay() {
   // has user declined location opt-in
   if (currentLocationWeatherData === null) {
     isDataSet = setActiveLocationData(await getNamedLocationWeatherData(elForm.search.value));
+    displayErrorMessage('No access to user coordinates');
   } else {
     isDataSet = setActiveLocationData(currentLocationWeatherData);
   }
