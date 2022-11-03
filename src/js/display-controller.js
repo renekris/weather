@@ -1,5 +1,4 @@
 import { addSeconds, format } from 'date-fns';
-import initMap from './map-api';
 import { getCurrentLocationWeatherData, getNamedLocationWeatherData } from './weather-api';
 import loadingSvg from '../svg/loading.svg';
 
@@ -28,6 +27,23 @@ function clearElement(element) {
   while (element.firstChild) {
     // .remove() also removes the listeners and observers
     element.firstChild.remove();
+  }
+}
+
+// using public key with a lot of restrictions
+async function displayMap(lat, lng) {
+  const url = 'https://maps.googleapis.com/maps/api/staticmap';
+  const zoom = 7;
+  const mapId = 'd4fac8606dc8b109';
+  const key = 'AIzaSyBQqW0X5ZTQKZb-iP78WQDLvqMuHTGCEpA';
+  const size = '250x250';
+  const elMapDiv = elForecastCity.appendChild(document.createElement('div'));
+  elMapDiv.id = 'map';
+  const image = elMapDiv.appendChild(document.createElement('img'));
+
+  const response = await fetch(`${url}?map_id=${mapId}&center=${lat},${lng}&size=${size}&key=${key}&zoom=${zoom}`, { mode: 'cors' });
+  if (response.ok) {
+    image.src = response.url;
   }
 }
 
@@ -111,10 +127,7 @@ function displayCity() {
     elCityCoords.textContent = `Lat: ${activeLocationData.city.coord.lat} Lon: ${activeLocationData.city.coord.lon}`;
   }
 
-  const elMapDiv = elForecastCity.appendChild(document.createElement('div'));
-  elMapDiv.id = 'map';
-
-  initMap(activeLocationData.city.coord.lat, activeLocationData.city.coord.lon);
+  displayMap(activeLocationData.city.coord.lat, activeLocationData.city.coord.lon);
 }
 
 function displayCurrent() {

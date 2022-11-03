@@ -74,6 +74,13 @@ body {
   color: white;
   background-color: #222;
   border: none;
+  border-left: 1px black solid;
+  border-right: 1px black solid;
+}
+
+.header input:hover,
+.header button:hover {
+  background-color: #2a2a2a;
 }
 
 .header input {
@@ -146,7 +153,8 @@ body {
   min-height: 100%;
   background-color: #111;
   color: white;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: min-content max-content max-content;
 }
 
 .forecast-city {
@@ -156,7 +164,7 @@ body {
   flex-direction: column;
   background-color: #222;
   padding: 1rem;
-  min-width: 14rem;
+  width: max-content;
   height: 100%;
 }
 
@@ -179,17 +187,26 @@ body {
 }
 
 #map {
-  height: 100%;
-  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#map img {
+  height: auto;
+  width: 90%;
+  max-height: 250px;
+  max-width: 250px;
 }
 
 .forecast-current {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: center;
   background-color: #222;
   padding: 1rem;
-  width: 100%;
+  max-width: 100%;
   height: 100%;
 
   overflow: auto;
@@ -218,6 +235,7 @@ body {
   align-items: center;
   margin: 0 0.5rem 0 0.5rem;
   min-width: 8rem;
+  height: 100%;
 }
 
 .current-div-item:first-of-type {
@@ -241,7 +259,7 @@ body {
     background-color: #2a2a2a;
   }
   50% {
-    background-color: #333333;
+    background-color: #303030;
   }
   100% {
     background-color: #2a2a2a;
